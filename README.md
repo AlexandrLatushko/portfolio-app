@@ -1,54 +1,94 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Portfolio Overview Application
 
-Currently, two official plugins are available:
+![Project Demo](https://via.placeholder.com/800x400.png?text=Project+Demo) <!-- Замените на реальный скриншот -->
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Модуль для управления инвестиционным портфелем с real-time обновлениями цен активов.
 
-## Expanding the ESLint configuration
+## 🚀 Запуск проекта
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+1. **Клонировать репозиторий**
+```bash
+git clone https://github.com/yourusername/portfolio-app.git
+cd portfolio-app
+Установить зависимости
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+npm install
+Запустить development сервер
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+npm run dev
+Приложение будет доступно по адресу: http://localhost:5173
+
+🏗️ Архитектура
+
+├── components/       # React-компоненты
+├── store/            # Redux хранилище
+├── hooks/            # Кастомные хуки
+├── utils/            # Вспомогательные утилиты
+├── types/            # TypeScript типы
+└── styles/           # Стили (CSS Modules)
+Ключевые особенности архитектуры:
+
+State Management: Redux Toolkit для управления состоянием
+
+Реальное обновление: WebSocket через Binance API
+
+Оптимизация: Виртуализация списков с react-window
+
+Сохранение: Локальное хранилище (localStorage)
+
+📚 Использованные технологии
+Основные
+React 18 + TypeScript
+
+Redux Toolkit + React-Redux
+
+Socket.IO Client (WebSocket)
+
+React Window + react-virtualized-auto-sizer
+
+Framer Motion (анимации)
+
+UUID (генерация уникальных ID)
+
+Вспомогательные
+Vite (сборка)
+
+CSS Modules (стилизация)
+
+ESLint (линтинг)
+
+🌟 Особенности реализации
+✅ Основные требования:
+
+Real-time обновление цен через WebSocket
+
+Добавление/удаление активов
+
+Виртуализация списков (>100 элементов)
+
+Локальное сохранение состояния
+
+Адаптивный интерфейс
+
+✨ Дополнительно:
+
+Анимации взаимодействия
+
+Валидация формы
+
+Обработка ошибок
+
+Прогресс-бары для отображения долей
+
+Оптимизация производительности
+
+📦 Производственная сборка
+
+npm run build
+Собранная версия будет доступна в папке dist/
+
+Лицензия
+MIT License
