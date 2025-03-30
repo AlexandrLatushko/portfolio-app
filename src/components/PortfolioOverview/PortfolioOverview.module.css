@@ -23,6 +23,7 @@
   .formContainer {
     margin-bottom: 2rem;
   }
+
   
   .listHeader {
     display: grid;
@@ -32,6 +33,37 @@
     background: #f5f5f5;
     font-weight: bold;
   }
+
+  .statusBar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .statusIndicator {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
+  }
+  
+  .statusIndicator.connecting {
+    background: #ff9800;
+    color: white;
+  }
+  
+  .statusIndicator.connected {
+    background: #4caf50;
+    color: white;
+  }
+  
+  .statusIndicator.error {
+    background: #f44336;
+    color: white;
+  }
+  
+  /* Остальные стили остаются без изменений */
   
   @media (max-width: 1024px) {
     .listHeader {

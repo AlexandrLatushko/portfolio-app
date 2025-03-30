@@ -1,15 +1,41 @@
+import { useEffect, useState } from 'react';
+import { useAppSelector } from '../../store/hooks';
+import useWebSocket from '../../hooks/useWebSocket';
 import { motion } from 'framer-motion';
+import { io } from 'socket.io-client';
 import AssetForm from './AssetForm';
 import AssetList from './AssetList';
 import styles from './PortfolioOverview.module.css';
-import { useAppSelector } from '../../store/hooks';
-import useWebSocket from '../../hooks/useWebSocket';
 
 const PortfolioOverview = () => {
   const { assets, totalValue, error } = useAppSelector(state => state.portfolio);
+  const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'connected' | 'error'>('connecting');
   const symbols = assets.map(a => a.symbol);
   
   useWebSocket(symbols);
+
+  useEffect(() => {
+    const socket = io('wss://stream.binance.com:9443/ws', {
+      path: '/stream',
+      transports: ['websocket']
+    });
+
+    socket.on('connect', () => {
+      setConnectionStatus('connected');
+    });
+
+    socket.on('disconnect', () => {
+      setConnectionStatus('connecting');
+    });
+
+    socket.on('connect_error', () => {
+      setConnectionStatus('error');
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   return (
     <motion.div 
@@ -17,9 +43,14 @@ const PortfolioOverview = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >
-      <div className={styles.header}>
-        <h1>Portfolio Overview</h1>
-        <div>Total Value: ${totalValue.toFixed(2)}</div>
+      <div className={styles.statusBar}>
+        <div className={`${styles.statusIndicator} ${styles[connectionStatus]}`}>
+          {connectionStatus.toUpperCase()}
+        </div>
+        <div className={styles.header}>
+          <h1>Portfolio Overview</h1>
+          <div className={styles.totalValue}>Total Value: ${totalValue.toFixed(2)}</div>
+        </div>
       </div>
 
       {error && <div className={styles.error}>{error}</div>}

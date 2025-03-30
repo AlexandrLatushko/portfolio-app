@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useAppDispatch } from '../store/hooks';
-import { io } from 'socket.io-client';
-import { updatePrice } from '../store/portfolioSlice';
+import { io, Socket } from 'socket.io-client';
+import { updatePrice, setError } from '../store/portfolioSlice';
 
 const useWebSocket = (symbols: string[]) => {
   const dispatch = useAppDispatch();
@@ -10,28 +10,57 @@ const useWebSocket = (symbols: string[]) => {
     if (symbols.length === 0) return;
 
     const streams = symbols.map(s => `${s.toLowerCase()}usdt@ticker`);
-    const socket = io('wss://stream.binance.com:9443/stream', {
-      transports: ['websocket'],
-      reconnection: true,
-    });
+    let socket: Socket;
 
-    socket.emit('subscribe', streams);
+    try {
+      socket = io('wss://stream.binance.com:9443/ws', {
+        transports: ['websocket'],
+        reconnection: true,
+        reconnectionAttempts: 5,
+        reconnectionDelay: 5000,
+        path: '/stream'
+      });
 
-    socket.on('message', (data) => {
-      if (data.stream.endsWith('@ticker')) {
-        const { s: symbol, c: price, P: change } = data.data;
-        dispatch(updatePrice({
-          symbol: symbol.replace('USDT', ''),
-          price: parseFloat(price),
-          change24h: parseFloat(change),
-        }));
-      }
-    });
+      socket.on('connect', () => {
+        console.log('WebSocket connected');
+        socket.emit('SUBSCRIBE', streams);
+      });
+
+      socket.on('message', (rawData: string) => {
+        try {
+          const data = JSON.parse(rawData);
+          if (data.stream?.endsWith('@ticker')) {
+            const ticker = data.data;
+            dispatch(updatePrice({
+              symbol: ticker.s.replace('USDT', '').toUpperCase(),
+              price: parseFloat(ticker.c),
+              change24h: parseFloat(ticker.P)
+            }));
+          }
+        } catch (err) {
+          console.error('Message processing error:', err);
+        }
+      });
+
+      socket.on('connect_error', (err) => {
+        console.error('Connection error:', err.message);
+        dispatch(setError('Connection error. Trying to reconnect...'));
+      });
+
+    } catch (err) {
+      console.error('WebSocket initialization failed:', err);
+      dispatch(setError('WebSocket connection failed'));
+    }
 
     return () => {
-      socket.disconnect();
+      if (socket) {
+        socket.off('message');
+        socket.disconnect();
+      }
     };
   }, [symbols, dispatch]);
+
+  return null;
 };
 
 export default useWebSocket;
