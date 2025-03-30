@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
-import { useAppDispatch } from '../store/store';
+import { useAppDispatch } from '../store/hooks';
 import { io } from 'socket.io-client';
+import { updatePrice } from '../store/portfolioSlice';
 
 const useWebSocket = (symbols: string[]) => {
   const dispatch = useAppDispatch();
@@ -12,14 +13,11 @@ const useWebSocket = (symbols: string[]) => {
     const socket = io('wss://stream.binance.com:9443/stream', {
       transports: ['websocket'],
       reconnection: true,
-      reconnectionAttempts: 5,
     });
 
-    socket.on('connect', () => {
-      socket.emit('subscribe', streams);
-    });
+    socket.emit('subscribe', streams);
 
-    socket.on('message', (data: any) => {
+    socket.on('message', (data) => {
       if (data.stream.endsWith('@ticker')) {
         const { s: symbol, c: price, P: change } = data.data;
         dispatch(updatePrice({
@@ -28,10 +26,6 @@ const useWebSocket = (symbols: string[]) => {
           change24h: parseFloat(change),
         }));
       }
-    });
-
-    socket.on('connect_error', (err) => {
-      dispatch(setError(`WebSocket error: ${err.message}`));
     });
 
     return () => {

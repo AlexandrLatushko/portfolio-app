@@ -1,12 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Asset, PortfolioState } from '../types';
-
-const initialState: PortfolioState = {
-  assets: [],
-  totalValue: 0,
-  status: 'idle',
-  error: undefined,
-};
+import { Asset, initialState } from '../types';
 
 const portfolioSlice = createSlice({
   name: 'portfolio',

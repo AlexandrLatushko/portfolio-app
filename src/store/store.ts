@@ -1,14 +1,18 @@
 import { configureStore } from '@reduxjs/toolkit';
 import portfolioReducer from './portfolioSlice';
-import { loadState } from '../utils/localStorage';
+import { loadState, saveState } from '../utils/localStorage';
+
+const preloadedState = loadState();
 
 export const store = configureStore({
   reducer: {
     portfolio: portfolioReducer,
   },
-  preloadedState: {
-    portfolio: loadState() || undefined,
-  },
+  preloadedState: preloadedState ? { portfolio: preloadedState } : undefined,
+});
+
+store.subscribe(() => {
+  saveState(store.getState().portfolio);
 });
 
 export type RootState = ReturnType<typeof store.getState>;

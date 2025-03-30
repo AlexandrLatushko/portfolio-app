@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { useAppDispatch } from '../../store/store';
+import { useAppDispatch } from '../../store/hooks';
 import { motion } from 'framer-motion';
 import { addAsset, setError } from '../../store/portfolioSlice';
+import styles from './AssetForm.module.css';
 
 const AssetForm = () => {
   const [symbol, setSymbol] = useState('BTC');
@@ -23,14 +24,15 @@ const AssetForm = () => {
       onSubmit={handleSubmit}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="asset-form"
+      className={styles.form}
     >
       <select
         value={symbol}
         onChange={(e) => setSymbol(e.target.value)}
+        className={styles.select}
         aria-label="Select asset"
       >
-        {['BTC', 'ETH', 'BNB', 'ADA', 'SOL'].map(s => (
+        {['BTC', 'ETH', 'BNB', 'ADA'].map(s => (
           <option key={s} value={s}>{s}</option>
         ))}
       </select>
@@ -42,6 +44,7 @@ const AssetForm = () => {
         placeholder="Quantity"
         step="0.0001"
         min="0"
+        className={styles.input}
         aria-label="Enter quantity"
       />
       
@@ -49,6 +52,7 @@ const AssetForm = () => {
         type="submit"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
+        className={styles.button}
       >
         Add Asset
       </motion.button>

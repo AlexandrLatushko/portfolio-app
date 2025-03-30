@@ -1,0 +1,54 @@
+.row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1rem;
+    padding: 1rem;
+    border-bottom: 1px solid #e0e0e0;
+    transition: background 0.2s;
+    cursor: pointer;
+  }
+  
+  .row:hover {
+    background: rgba(33, 150, 243, 0.05);
+  }
+  
+  .cell {
+    display: flex;
+    align-items: center;
+  }
+  
+  .positive {
+    color: #4caf50;
+  }
+  
+  .negative {
+    color: #f44336;
+  }
+  
+  .percentageBar {
+    height: 24px;
+    background: rgba(33, 150, 243, 0.1);
+    border-radius: 4px;
+    position: relative;
+  }
+  
+  .percentageFill {
+    height: 100%;
+    background: #2196f3;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+  }
+  
+  .percentageBar span {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    font-size: 0.9rem;
+  }
+  
+  @media (max-width: 1024px) {
+    .row {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
